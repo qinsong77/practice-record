@@ -3,6 +3,8 @@ function isObject(target) {
 	return target !== null && (type === 'object' || type === 'function')
 }
 
+console.log(isObject(Symbol('ts')))
+
 function cloneSymbol(target) {
 	return Object(Symbol.prototype.valueOf.call(target))
 }
@@ -36,18 +38,9 @@ function cloneFunction(func) {
 		return eval(funcString)
 	}
 }
-// while 遍历最快
-function forEach(array, iteratee) {
-	let index = -1;
-	const length = array.length;
-	while (++index < length) {
-		iteratee(array[index], index);
-	}
-	return array;
-}
 
 function deepClone(target, map = new WeakMap()) { // weakMap 比Map好，因为是弱引用，key是null会自动垃圾回收
-	if (!isObject(target)) return target
+	// if (!isObject(target)) return target
 	const stringType = Object.prototype.toString.call(target)
 	switch (stringType) {
 		case '[object Boolean]':
@@ -78,10 +71,10 @@ function deepClone(target, map = new WeakMap()) { // weakMap 比Map好，因为�
 			} else if (stringType === '[object Map]') {
 				target.forEach((v, k) => cloneTarget.set(k, deepClone(v, map)))
 			} else if (stringType === '[object Array]') {
-				forEach(target, (v, index) => cloneTarget[index] = deepClone(v, map))
+				target.forEach((v, index) => cloneTarget[index] = deepClone(v, map))
 			} else {
 				const keys = Object.keys(target)
-				forEach(target, (v, index) => cloneTarget[keys[index]] = deepClone(v, map))
+				keys.forEach(key => cloneTarget[key] = deepClone(target[key], map))
 			}
 			return cloneTarget
 		default:
@@ -112,7 +105,7 @@ const target = {
 	bool: new Boolean(true),
 	num: new Number(2),
 	str: new String(2),
-	symbol: Object(Symbol(1)),
+	symbol: Symbol(1),
 	date: new Date(),
 	reg: /\d+/,
 	error: new Error(),
@@ -125,7 +118,7 @@ const target = {
 };
 
 
+console.log(target);
 const result = deepClone(target);
 
-console.log(target);
 console.log(result);
