@@ -1,0 +1,81 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>bst</title>
+  <style>
+    * {
+      box-sizing: border-box;
+    }
+    
+    html, body {
+      margin: 0;
+      padding: 0;
+      height: 100%;
+    }
+    
+    .container {
+      height: 100%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+    
+    #canvas {
+      height: 80vh;
+      width: 80vw;
+      border: 1px solid #e5e6e6;
+    }
+  </style>
+</head>
+<body>
+<div class="container">
+  <canvas id="canvas"/>
+</div>
+<script src="BST.js"></script>
+<script>
+	const bst = new BinarySearchTree()
+	console.log(bst)
+	bst.insert(30)
+	bst.insert(12)
+	bst.insert(15)
+	bst.insert(15)
+	bst.insert(31)
+	bst.insert(45)
+	bst.preOrderTraverse((v) => console.log(v))
+
+
+	const canvas = document.getElementById('canvas')
+	const context = canvas.getContext('2d')
+
+	// 计算设备的dpr
+	function setupCanvas(canvas){
+		const dpr = window.devicePixelRatio || 1
+		const rect = canvas.getBoundingClientRect()
+		canvas.width = rect.width * dpr
+		canvas.height = rect.height * dpr
+		canvas.style.width = rect.width + 'px'
+		canvas.style.height = rect.height + 'px'
+		return canvas
+	}
+
+	setupCanvas(canvas)
+  const rootNodeX = canvas.width / 2
+  const rootNodeY =  30
+	function drawNode(element){
+		const radius = 20
+		context.beginPath()
+		context.arc(rootNodeX, rootNodeY, radius, 0, 2 * Math.PI, false)
+		context.fillStyle = 'rgba(155, 187, 89, 0.5)'
+		context.fill()
+		context.lineWidth = 1
+		context.strokeStyle = '#003300'
+		context.stroke()
+		context.font = '13px italic';
+		context.fillText(element, rootNodeX - radius/2, rootNodeY)
+	}
+
+	drawNode(13)
+</script>
+</body>
+</html>
