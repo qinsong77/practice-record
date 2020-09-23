@@ -178,3 +178,16 @@ console.log(event)
 // setTimeout(() => {
 // 	event.emit('test1')
 // }, 3000)
+
+
+function _instanceOf(instanceObject, classFunc) {
+	let protoType = classFunc.prototype
+	let proto = target.__proto__
+	// 或者
+	// let proto = Object.getPrototypeOf(instanceObject)
+	while (true) {
+		if (proto === null) return false
+		if (proto === protoType) return true
+		proto = proto.__proto__ // 或者 proto = Object.getPrototypeOf(proto)
+	}
+}
