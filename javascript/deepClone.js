@@ -70,7 +70,7 @@ const target = {
 	bool: false,
 	map,
 	set,
-	array: [2, 4, 8],
+	// array: [2, 4, 8, obj],
 	boolObj: new Boolean(true),
 	numObj: new Number(2),
 	str: new String(2),
@@ -107,108 +107,108 @@ function createData(deep, breadth) {
 }
 
 
-function deepClone2(source, hashMap = new WeakMap()) {
+function deepClone2(data, hashMap = new WeakMap()) {
 	
-	let cloneData = new source.constructor()
+	if (!needDeepClone(data)) return copyBaseValue(data)
+	
+	let cloneData = new data.constructor()
 	// 循环数组
 	const loopList = [
 		{
-			origin: source,
-			parent: null,
-			parentType: null,
-			dataKey: null,
-			data: cloneData,
+			source: data,
+			target: cloneData,
 		}
 	]
 	
 	while (loopList.length) {
 		// 深度优先遍历
 		const node = loopList.pop()
-		const origin = node.origin
-		const parent = node.parent
-		const parentType = node.parentType
-		let data = node.data
-		let dataKey = node.dataKey
-		const stringType = Object.prototype.toString.call(origin)
+		const source = node.source
+		let target = node.target
 		
-		if (hashMap.get(origin)) {
-			data = hashMap.get(origin)
-			if (parent && dataKey) {
-				parentType === '[object Set]' ? parent.add(data) : parent[dataKey] = data
-			}
-			continue
-		} else hashMap.set(origin, data)
+		if (!hashMap.get(source)) {
+			hashMap.set(source, target)
+		}
+		
+		const stringType = Object.prototype.toString.call(source)
 		
 		switch (stringType) {
 			case '[object Object]':
-				const keys = Object.keys(origin)
+				const keys = Object.keys(source)
 				keys.forEach(key => {
-					if (needDeepClone(origin[key])) {
-						loopList.push({
-							origin: origin[key],
-							parent: data,
-							parentType: stringType,
-							dataKey: key,
-							data: new origin[key].constructor()
-						})
-					} else {
-						data[key] = copyBaseValue(origin[key])
-						if (parent && dataKey) {
-							parentType === '[object Set]' ? parent.add(data) : parent[dataKey] = data
+					if (needDeepClone(source[key])) {
+						if (hashMap.get(source[key])) {
+							target[key] = hashMap.get(source[key])
+						} else {
+							const newNode = {
+								source: source[key],
+								target: new source[key].constructor()
+							}
+							loopList.push(newNode)
+							target[key] = newNode.target
 						}
+					} else {
+						target[key] = copyBaseValue(source[key])
 					}
 				})
 				break
 			
 			case '[object Array]':
-				origin.forEach((v, index) => {
+				source.forEach(v => {
 					if (needDeepClone(v)) {
-						loopList.push({
-							origin: v,
-							parent: data,
-							dataKey: index,
-							data: new v.constructor()
-						})
-					} else {
-						data[index] = copyBaseValue(v)
-						if (parent && dataKey) {
-							parentType === '[object Set]' ? parent.add(data) : parent[dataKey] = data
+						
+						if (hashMap.get(v)) {
+							target.push(hashMap.get(v))
+						} else {
+							const newNode = {
+								source: v,
+								target: new v.constructor()
+							}
+							loopList.push(newNode)
+							target.push(newNode.target)
 						}
+					} else {
+						target.push(copyBaseValue(v))
+					}
+				})
+				break
+			
+			case '[object Map]':
+				source.forEach((v, k) => {
+					if (needDeepClone(v)) {
+						if (hashMap.get(v)) {
+							target.set(k, hashMap.get(v))
+						} else {
+							const newNode = {
+								source: v,
+								target: new v.constructor()
+							}
+							loopList.push(newNode)
+							target.set(k, newNode.target)
+						}
+					} else {
+						target.set(k, copyBaseValue(v))
 					}
 				})
 				break
 			
 			case '[object Set]':
-				origin.forEach(v => {
+				source.forEach(v => {
 					if (needDeepClone(v)) {
-						loopList.push({
-							origin: v,
-							parent: data,
-							dataKey: v,
-							data: new v.constructor()
-						})
-					} else {
-						data.add(copyBaseValue(v))
-						if (parent && dataKey) {
-							parentType === '[object Set]' ? parent.add(data) : parent[dataKey] = data
+						
+						if (hashMap.get(v)) {
+							target.add(hashMap.get(v))
+						} else {
+							const newNode = {
+								source: v,
+								target: new v.constructor()
+							}
+							loopList.push(newNode)
+							target.add(newNode.target)
 						}
-					}
-				})
-				break
-			case '[object Map]':
-				origin.forEach((v, k) => {
-					if (needDeepClone(v)) {
-						loopList.push({
-							origin: v,
-							parent: data,
-							dataKey: k,
-							data: new v.constructor()
-						})
+						
 					} else {
-						data.set(k, copyBaseValue(v))
-						if (parent && dataKey) {
-							parentType === '[object Set]' ? parent.add(data) : parent[dataKey] = data
-						}
+						target.add(copyBaseValue(v))
 					}
 				})
 				break
@@ -233,8 +233,8 @@ function copyBaseValue(target) {
 const obj2 = createData(112122, 2)
 // console.log(obj2)
 // const copyObj = deepClone2(obj2)
-
-// obj2['tt'] = 'sdo'
+//
+// obj2['tt']['tt'] = 'sdo'
 // console.log(obj2)
 // console.log(copyObj)
 target.obj2 = obj2
@@ -243,3 +243,11 @@ const result = deepClone2(target)
 target.bool = 'boolean11'
 obj2.test = 1121
 console.log(result)
+
+const loopObj = {
+	test: 'hello'
+}
+loopObj.child = loopObj
+
+console.log(deepClone2(loopObj))
+console.log(deepClone(loopObj))
