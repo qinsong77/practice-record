@@ -14,9 +14,9 @@ console.log(arr)
 // 冒泡排序
 
 function bubbleSort(arr) {
-	
+
 	const len = arr.length
-	
+
 	for (let i = 0; i < len - 1; i++) {
 		for (let j = 0; j < len - 1 - i; j++) {
 			if (arr[j] > arr[j + 1]) {
@@ -27,9 +27,9 @@ function bubbleSort(arr) {
 			}
 		}
 	}
-	
+
 	return arr
-	
+
 }
 
 
@@ -39,7 +39,7 @@ function bubbleSort(arr) {
 
 function selectionSort(arr) {
 	const len = arr.length
-	
+
 	for (let i = 0; i < len - 1; i++) {
 		let minIndex = i
 		for (let j = i + 1; j < len; j++) {
@@ -49,7 +49,7 @@ function selectionSort(arr) {
 		}
 		if (minIndex !== i) [arr[i], arr[minIndex]] = [arr[minIndex], arr[i]]
 	}
-	
+
 	return arr
 }
 
@@ -57,9 +57,9 @@ function selectionSort(arr) {
 
 // const a = [ 70, 49, 5, 17, 24, 72, 85, 75, 68, 11 ]
 function insertSort(arr) {
-	
+
 	const len = arr.length
-	
+
 	for (let i = 0; i < len; i++) {
 		const v = arr[i + 1]
 		let j = i + 1
@@ -70,7 +70,7 @@ function insertSort(arr) {
 			}
 		}
 	}
-	
+
 	return arr
 }
 
@@ -94,7 +94,7 @@ function merge(left, right) {
 	while (i < left.length && j < right.length) {
 		result.push(left[i] < right[j] ? left[i++] : right[j++])
 	}
-	
+
 	return result.concat(i < left.length ? left.slice(i) : right.slice(j))
 }
 
@@ -165,18 +165,18 @@ function quick(array, left, right) {
 
 function partition(array, left, right) {
 	const pivot = array[Math.floor((right + left) / 2)]
-	
+
 	let i = left
 	let j = right
 	while (i <= j) {
 		while (array[i] < pivot) {
 			i++
 		}
-		
+
 		while (array[j] > pivot) {
 			j--
 		}
-		
+
 		if (i <= j) {
 			[array[i], array[j]] = [array[j], array[i]]
 			i++
@@ -211,3 +211,64 @@ function quickSort2(array, start, end) {
 }
 
 console.log(quickSort(arr))
+
+// 计数排序
+
+function countingSort(array){
+	if (array.length < 2) return array
+
+	const maxValue = Math.max(...array)
+
+	const counts = new Array(maxValue + 1)
+
+	array.forEach(element => {
+		if (!counts[element]) counts[element] = 0
+		counts[element]++
+	})
+	let sortIndex = 0
+
+	counts.forEach((count, i) => {
+		while (count > 0) {
+			array[sortIndex++] = i
+			count--
+		}
+	})
+
+	return array
+}
+
+// console.log(countingSort(arr))
+
+
+
+/*
+	搜索算法
+*/
+
+//顺序搜素 for循环
+
+// 二分搜索
+
+function binarySearch(array, val){
+
+	const sortedArray = quickSort(array)
+
+	let low = 0
+	let high = sortedArray.length - 1
+
+	while (low <= high) {
+		const mid = Math.floor((low + high)/2)
+
+		const midVal = array[mid]
+		if (midVal === val) return mid
+		if (midVal > val) {
+			high = mid - 1
+		} else {
+			low = mid + 1
+		}
+	}
+
+	return  -1
+}
+
+console.log(binarySearch([1, 12, 14, 34, 80, 122], 122))
