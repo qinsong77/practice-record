@@ -272,3 +272,60 @@ function binarySearch(array, val){
 }
 
 console.log(binarySearch([1, 12, 14, 34, 80, 122], 122))
+
+// 分而治之 解决二分查找
+function binarySearchRecursive(array, val, low, high){
+	if (low <= high) {
+		const mid = Math.floor((low + high) / 2)
+		const midVal = array[mid]
+		if (midVal > val) {
+			return binarySearchRecursive(array, val, low, mid - 1)
+		} else if (midVal > val) {
+			return binarySearchRecursive(array, val, low + 1, high)
+		} else {
+			return midVal
+		}
+	}
+	return -1
+}
+
+// 最小硬币找零问题
+
+
+function minCoinChange(coins, amount){
+	const cache = []
+	const makeChange = (value) => {
+		if (!value) {
+			return []
+		}
+		if (cache[value]) {
+			return cache[value]
+		}
+
+		let min = []
+		let newMin
+		let newAmount
+		for (let i = 0; i < coins.length; i++) {
+			const coin = coins[i]
+			newAmount = value - coin
+			if (newAmount >= 0) {
+				newMin = makeChange(newAmount)
+			}
+			if (newAmount >= 0 &&
+				(newMin.length < min.length - 1 || !min.length) &&
+				(newMin.length || !newAmount)) {
+				min = [coin].concat(newMin)
+				console.log('new Min ' + min + ' for ' + amount)
+			}
+		}
+		return ([cache[value] = min])
+	}
+	return makeChange(amount)
+}
+
+
+console.log(minCoinChange([1,3, 4], 6))
+
+function lcs(wordX, wordY){
+
+}
