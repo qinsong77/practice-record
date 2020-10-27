@@ -1,3 +1,23 @@
+// 实现reduce
+// prev, next, currentIndex, array
+Array.prototype.myReduce = function (cb, prev) {
+	let i = 0
+	if (!prev) {
+		prev = prev || this[0]
+		i++
+	}
+	for (; i < this.length; i++) {
+		prev = cb(prev, this[i], i, this)
+	}
+	return prev
+}
+const sum = [1, 2, 3].myReduce((prev, next) => {
+	return prev + next
+})
+
+console.log(sum) // 6
+
+
 // 取并集
 const arrayA = [1, 2, 3], arrayB = [2, 4, 3, 5]
 
@@ -101,3 +121,38 @@ function disorder(array) {
 
 
 console.log(disorder(flatten(arr)))
+
+// 数组去重
+function unique(arr) {
+	return arr.myReduce((prev, cur) => prev.includes(cur) ? prev : [...prev, cur], [])
+}
+
+const arr2 = [1, 1, 'true', 'true', true, true, 15, 15, false, false, undefined, undefined, null, null, NaN, NaN, 'NaN', 0, 0, 'a', 'a', {}, {}]
+console.log(unique(arr2))
+
+function unique2(array) {
+	for (let i = 0; i < array.length; i++) {
+		for (let j = i + 1; j < array.length; j++) {
+			if (array[i] === array[j]) {
+				array.splice(j, 1)
+				j--
+			}
+		}
+	}
+	return array
+}
+
+console.log(unique2(arr2))
+
+
+function unique3(array) {
+	const arr = []
+	for (let i = 0; i < array.length; i++) {
+		if (arr.indexOf(array[i]) === -1) {
+			arr.push(array[i])
+		}
+	}
+	return arr
+}
+
+console.log(unique3(arr2))
