@@ -1,0 +1,24 @@
+{
+  "name": "practice-record",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "testPromise": "promises-aplus-tests javascript/promise.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/qinsong77/practice-record.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/qinsong77/practice-record/issues"
+  },
+  "homepage": "https://github.com/qinsong77/practice-record#readme",
+  "devDependencies": {
+    "promises-aplus-tests": "^2.1.2"
+  }
+}
