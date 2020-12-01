@@ -857,7 +857,7 @@
    * dynamically accessing methods on Array prototype
    */
   // 使用Object.create复制Array的原型对象prototype, 遍历一个7个数组方法的数组，包括push,pop,shift,unshift,splice,reverse这些能改变数组的方法
-  // 使用函数劫持，在遍历时使用Object.defineProperty重写复制的原型对象对应方法的value,即重写方法，在运行是通知依赖wacther更新，而在初始化data时判断是数组重写该数组的原型__proto__指向
+  // 使用函数劫持，在遍历时使用Object.defineProperty重写复制的原型对象对应方法的value,即重写方法，在运行是通知依赖watcher更新，而在初始化data时判断是数组重写该数组的原型__proto__指向
   var arrayProto = Array.prototype;
   var arrayMethods = Object.create(arrayProto);
 

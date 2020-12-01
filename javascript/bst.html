@@ -30,7 +30,7 @@
 </head>
 <body>
 <div class="container">
-  <canvas id="canvas"/>
+<!--  <canvas id="canvas"/>-->
 </div>
 <script src="BST.js"></script>
 <script>
@@ -44,9 +44,9 @@
 	bst.insert(45)
 	bst.preOrderTraverse((v) => console.log(v))
 
-
-	const canvas = document.getElementById('canvas')
-	const context = canvas.getContext('2d')
+  //
+	// const canvas = document.getElementById('canvas')
+	// const context = canvas.getContext('2d')
 
 	// 计算设备的dpr
 	function setupCanvas(canvas){
@@ -59,9 +59,30 @@
 		return canvas
 	}
 
-	setupCanvas(canvas)
-  const rootNodeX = canvas.width / 2
-  const rootNodeY =  30
+	function setupCanvas2(width, height){
+		// create canvas
+		const canvas = document.createElement('canvas')
+		const ctx  = canvas.getContext('2d')
+		canvas.style.width = `${width}px`
+		canvas.style.height = `${height}px`
+		document.querySelector('.container').appendChild(canvas)
+
+		// scale canvas
+		const dpr = window.devicePixelRatio || 1
+		canvas.width = width * dpr
+		canvas.height = height * dpr
+		ctx.scale(dpr, dpr)
+    return {
+			canvas,
+			ctx
+    }
+	}
+
+	// setupCanvas(canvas)
+  const { canvas, ctx: context} = setupCanvas2(800, 500)
+	const rootNodeX = canvas.width / 2
+	const rootNodeY = 30
+
 	function drawNode(element){
 		const radius = 20
 		context.beginPath()
@@ -71,8 +92,8 @@
 		context.lineWidth = 1
 		context.strokeStyle = '#003300'
 		context.stroke()
-		context.font = '13px italic';
-		context.fillText(element, rootNodeX - radius/2, rootNodeY)
+		context.font = '13px italic'
+		context.fillText(element, rootNodeX - radius / 2, rootNodeY)
 	}
 
 	drawNode(13)
